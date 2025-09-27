@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proctored Online Exam</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .font-fira-code {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e0e7ff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4338ca;
+        }
+        /* Style for the warning popup */
+        .warning-popup {
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 transition-colors duration-300">
+
+    <!-- Main Container -->
+    <div id="app-container" class="min-h-screen flex items-center justify-center p-4">
+
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="text-center bg-white p-8 md:p-12 rounded-2xl shadow-2xl max-w-2xl mx-auto transform transition-all duration-500">
+            <svg class="mx-auto h-16 w-16 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mt-4">Online Proctored Exam</h1>
+            <p class="text-slate-600 mt-4 text-base md:text-lg">
+                Please read the following instructions carefully before you begin.
+            </p>
+            <div class="text-left bg-slate-50 border border-slate-200 rounded-lg p-6 mt-6 space-y-3">
+                <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">1.</span> The exam must be taken in fullscreen mode.</p>
+                <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">2.</span> Do not exit fullscreen or switch tabs during the exam.</p>
+                <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">3.</span> Any such activity will be logged and may lead to disqualification.</p>
+                <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">4.</span> Ensure you have a stable internet connection.</p>
+            </div>
+            <button id="start-exam-btn" class="mt-8 w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-300 transform hover:scale-105">
+                Start Exam & Enter Fullscreen
+            </button>
+        </div>
+
+        <!-- Exam View (Hidden by default) -->
+        <div id="exam-view" class="hidden w-full h-screen">
+            <div class="flex flex-col md:flex-row h-full">
+                <!-- Main Content -->
+                <main class="flex-1 bg-white p-6 md:p-8 overflow-y-auto">
+                    <!-- Header -->
+                    <div class="flex justify-between items-center border-b pb-4">
+                        <h1 class="text-2xl font-bold text-slate-900">Programming & Concepts Test</h1>
+                        <div id="timer" class="text-lg font-semibold bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg">
+                            Time Left: 10:00
+                        </div>
+                    </div>
+                    <!-- Question Area -->
+                    <div id="question-container" class="mt-8">
+                        <!-- Questions will be injected here by JavaScript -->
+                    </div>
+                     <!-- Navigation Buttons -->
+                    <div class="mt-8 pt-6 border-t flex justify-between items-center">
+                        <button id="prev-btn" class="bg-slate-300 text-slate-800 font-bold py-2 px-6 rounded-lg hover:bg-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300">Previous</button>
+                        <span id="question-counter" class="text-slate-600 font-medium"></span>
+                        <button id="next-btn" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 transition-colors duration-300">Next</button>
+                        <button id="submit-btn" class="hidden bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition-colors duration-300">Submit Exam</button>
+                    </div>
+                </main>
+
+                <!-- Activity Log Sidebar -->
+                <aside class="w-full md:w-80 bg-slate-50 border-l border-slate-200 p-6 flex flex-col">
+                    <h2 class="text-xl font-bold text-slate-800 border-b pb-3 mb-4">Activity Log</h2>
+                    <div id="activity-log-container" class="flex-1 overflow-y-auto space-y-3">
+                        <p class="text-sm text-green-600 p-3 bg-green-50 rounded-lg">Exam started successfully.</p>
+                        <!-- Log entries will be added here -->
+                    </div>
+                    <div class="mt-auto text-center text-xs text-slate-500 pt-4">
+                        Made With 💖 by <a href="https://mrsagarbiswas.github.io/portfolio/" target="_blank" rel="noopener noreferrer" class="font-semibold text-indigo-600 hover:underline">MrSagarBiswas</a>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- Submission Screen -->
+        <div id="submission-screen" class="hidden text-center bg-white p-12 rounded-2xl shadow-2xl max-w-2xl mx-auto">
+             <svg class="mx-auto h-16 w-16 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h1 class="text-4xl font-bold text-slate-900 mt-4">Exam Submitted!</h1>
+            <p class="text-slate-600 mt-4 text-lg">
+                Thank you for completing the exam. Your responses have been recorded.
+            </p>
+            <div class="mt-6 text-slate-600">
+                You can now safely close this window.
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Fullscreen Warning -->
+    <div id="fullscreen-warning-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 shadow-2xl text-center max-w-md mx-auto">
+            <svg class="mx-auto h-16 w-16 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            <h2 class="text-2xl font-bold text-slate-900 mt-4">Warning: Fullscreen Required</h2>
+            <p class="text-slate-600 mt-4">
+                You have exited fullscreen mode. This action has been logged. Please return to fullscreen to continue the exam.
+            </p>
+            <button id="return-fullscreen-btn" class="mt-6 w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300">
+                Return to Fullscreen
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM ELEMENTS ---
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const examView = document.getElementById('exam-view');
+            const submissionScreen = document.getElementById('submission-screen');
+            const fullscreenWarningModal = document.getElementById('fullscreen-warning-modal');
+            const returnFullscreenBtn = document.getElementById('return-fullscreen-btn');
+            const startExamBtn = document.getElementById('start-exam-btn');
+            const activityLogContainer = document.getElementById('activity-log-container');
+            const timerEl = document.getElementById('timer');
+            const questionContainer = document.getElementById('question-container');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const questionCounterEl = document.getElementById('question-counter');
+
+            // --- EXAM DATA & STATE ---
+            let activityLog = [];
+            let timerInterval;
+            let currentQuestionIndex = 0;
+            let awayStartTime = null; // For tracking time away
+            let isExamActive = false; // To track if the exam has started
+            let hasEnteredFullscreenInitially = false;
+
+            const examQuestions = [
+                {
+                    question: "Given an input string `s` and a pattern `p`, implement regular expression matching with support for `.` and `*`. `.` matches any single character. `*` matches zero or more of the preceding element.",
+                    type: "code",
+                    answer: null
+                },
+                {
+                    question: "What is the output of the following C code snippet? `int main() { int arr[] = {10, 20, 30}; int *p = arr; printf(\"%d\", *(p + 2)); return 0; }`",
+                    options: ["20", "30", "Address of arr[2]", "Compiler Error"],
+                    answer: "30"
+                },
+                {
+                    question: "Which standard library function is used to dynamically allocate memory for an array of elements in C, initializing them to zero?",
+                    options: ["alloc()", "malloc()", "calloc()", "realloc()"],
+                    answer: "calloc()"
+                },
+                {
+                    question: "What is the correct type signature for a function in OCaml that takes an integer and returns that integer incremented by one?",
+                    options: ["int -> int", "int => int", "function(int): int", "int -> integer"],
+                    answer: "int -> int"
+                },
+                {
+                    question: "In OCaml, which keyword is essential for defining a function that calls itself?",
+                    options: ["recursive", "self", "def", "rec"],
+                    answer: "rec"
+                }
+            ];
+
+            // --- FUNCTIONS ---
+
+            // Function to add a log entry
+            const addLog = (message, type = 'warning') => {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                
+                let bgColor, textColor, icon;
+                if (type === 'warning') {
+                    bgColor = 'bg-red-100';
+                    textColor = 'text-red-800';
+                    icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.21 3.03-1.742 3.03H4.42c-1.532 0-2.492-1.696-1.742-3.03l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`;
+                } else if (type === 'success') {
+                    bgColor = 'bg-green-100';
+                    textColor = 'text-green-800';
+                    icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`;
+                } else { // 'info' type
+                    bgColor = 'bg-blue-100';
+                    textColor = 'text-blue-800';
+                    icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                }
+
+                logEntry.className = `flex items-start p-3 rounded-lg text-sm ${bgColor} ${textColor}`;
+                logEntry.innerHTML = `
+                    ${icon}
+                    <div>
+                        <p class="font-semibold">${message}</p>
+                        <p class="text-xs mt-1">${timestamp}</p>
+                    </div>
+                `;
+                activityLogContainer.appendChild(logEntry);
+                activityLogContainer.scrollTop = activityLogContainer.scrollHeight; // Auto-scroll
+                activityLog.push({ timestamp, message, type });
+            };
+
+            // Function to start the exam
+            const startExam = () => {
+                welcomeScreen.classList.add('hidden');
+                examView.classList.remove('hidden');
+                isExamActive = true; // Set flag before requesting fullscreen to prevent race condition
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    isExamActive = false; // Exam failed to start correctly
+                });
+                startTimer(600); // 10 minutes timer
+                renderQuestion();
+            };
+            
+            // Function to render the current question
+            const renderQuestion = () => {
+                const question = examQuestions[currentQuestionIndex];
+                let questionBodyHtml = '';
+
+                if (question.type === 'code') {
+                    questionBodyHtml = `
+                        <div class="bg-slate-800 text-slate-200 p-4 rounded-lg font-fira-code">
+                           <p class="mb-4 text-slate-400">// Provide your solution in the text area below.</p>
+                           <textarea id="code-answer" class="w-full h-64 p-4 border-slate-600 bg-slate-900 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-shadow duration-200 text-slate-200 font-fira-code resize-none" placeholder="Your code here..."></textarea>
+                        </div>
+                    `;
+                } else {
+                    questionBodyHtml = `
+                        <div class="space-y-4">
+                            ${question.options.map((option, index) => `
+                                <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors duration-200 has-[:checked]:bg-indigo-100 has-[:checked]:border-indigo-400">
+                                    <input type="radio" name="question-${currentQuestionIndex}" value="${option}" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                                    <span class="ml-4 text-slate-700">${option}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                questionContainer.innerHTML = `
+                    <h2 class="text-xl md:text-2xl font-semibold text-slate-800 mb-2">Question ${currentQuestionIndex + 1} of ${examQuestions.length}</h2>
+                    <p class="text-slate-700 text-lg mb-6 leading-relaxed">${question.question}</p>
+                    ${questionBodyHtml}
+                `;
+                updateNavigation();
+            };
+
+            // Function to update navigation buttons
+            const updateNavigation = () => {
+                prevBtn.disabled = currentQuestionIndex === 0;
+                if (currentQuestionIndex === examQuestions.length - 1) {
+                    nextBtn.classList.add('hidden');
+                    submitBtn.classList.remove('hidden');
+                } else {
+                    nextBtn.classList.remove('hidden');
+                    submitBtn.classList.add('hidden');
+                }
+                questionCounterEl.textContent = `Question ${currentQuestionIndex + 1} / ${examQuestions.length}`;
+            };
+
+            // Function to handle exam submission
+            const submitExam = () => {
+                clearInterval(timerInterval);
+                isExamActive = false;
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+                examView.classList.add('hidden');
+                submissionScreen.classList.remove('hidden');
+            }
+
+            // Function to start the timer
+            const startTimer = (duration) => {
+                let timeLeft = duration;
+                timerInterval = setInterval(() => {
+                    const minutes = Math.floor(timeLeft / 60);
+                    let seconds = timeLeft % 60;
+                    seconds = seconds < 10 ? '0' + seconds : seconds;
+                    timerEl.textContent = `Time Left: ${minutes}:${seconds}`;
+                    timeLeft--;
+                    if (timeLeft < 0) {
+                        clearInterval(timerInterval);
+                        addLog("Time's up! Exam submitted automatically.", 'info');
+                        submitExam();
+                    }
+                }, 1000);
+            };
+
+
+            // --- EVENT LISTENERS ---
+
+            startExamBtn.addEventListener('click', startExam);
+
+            returnFullscreenBtn.addEventListener('click', () => {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            });
+            
+            // Navigation listeners
+            nextBtn.addEventListener('click', () => {
+                if (currentQuestionIndex < examQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion();
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    renderQuestion();
+                }
+            });
+
+            submitBtn.addEventListener('click', () => {
+                // You can add a confirmation modal here in a real application
+                submitExam();
+            });
+
+            // Listener for fullscreen changes
+            document.addEventListener('fullscreenchange', () => {
+                if (isExamActive) {
+                    if (document.fullscreenElement) {
+                        // User has entered or returned to fullscreen
+                        if (!hasEnteredFullscreenInitially) {
+                            addLog('Entered fullscreen mode successfully.', 'success');
+                            hasEnteredFullscreenInitially = true;
+                        } else {
+                            addLog('Returned to fullscreen mode.', 'success');
+                        }
+                        fullscreenWarningModal.classList.add('hidden');
+                    } else {
+                        // User has exited fullscreen
+                        addLog('Exited fullscreen mode.', 'warning');
+                        fullscreenWarningModal.classList.remove('hidden');
+                    }
+                }
+            });
+
+            // Enhanced listeners for detecting cheating
+            
+            // 1. Detect leaving the tab/window
+            document.addEventListener('visibilitychange', () => {
+                if (!isExamActive) return;
+                
+                if (document.hidden) {
+                    if (!awayStartTime) { // Prevent double logging from blur
+                        awayStartTime = new Date();
+                        addLog('Switched to another tab or window.', 'warning');
+                    }
+                } else {
+                    if (awayStartTime) {
+                        const timeAway = Math.round((new Date() - awayStartTime) / 1000);
+                        addLog(`Returned to exam tab after ${timeAway} second(s).`, 'info');
+                        awayStartTime = null;
+                    }
+                }
+            });
+            
+            // 2. Detect leaving the browser window (blur)
+            window.addEventListener('blur', () => {
+                if (isExamActive && document.fullscreenElement && !document.hidden && !awayStartTime) {
+                    awayStartTime = new Date();
+                    addLog('Left the exam browser window.', 'warning');
+                }
+            });
+
+            window.addEventListener('focus', () => {
+                if (isExamActive && awayStartTime) {
+                    const timeAway = Math.round((new Date() - awayStartTime) / 1000);
+                    addLog(`Returned to exam window after ${timeAway} second(s).`, 'info');
+                    awayStartTime = null;
+                }
+            });
+            
+            // 3. Detect Paste
+            document.addEventListener('paste', (e) => {
+                if (!isExamActive) return;
+                addLog('Pasted content from clipboard.', 'warning');
+                // Optionally, you can prevent the paste action
+                // e.preventDefault();
+            });
+
+            // 4. Detect Screenshot attempt (Note: Not foolproof)
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'PrintScreen' && isExamActive) {
+                    addLog('Attempted to take a screenshot (PrintScreen key pressed).', 'warning');
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
+
+
