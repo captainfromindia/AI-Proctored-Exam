@@ -58,7 +58,7 @@
                 <svg class="w-5 h-5 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
                 <div>
                   <p class="font-semibold">Virtual Machine detected.</p>
-                  <p class="text-sm">Testing on VMs/remote desktops is not allowed. Please use a physical device.</p>
+                  <p class="text-sm">Please use your Main OS.</p>
                 </div>
               </div>
             </div>
@@ -139,7 +139,7 @@
             </svg>
             <h2 class="text-2xl font-bold text-slate-900 mt-4">Virtual Machine Detected</h2>
             <p id="vm-detail" class="text-slate-600 mt-3 text-sm"></p>
-            <p class="text-slate-700 mt-4">Testing from a VM, remote desktop, or software renderer is <span class="font-semibold">not allowed</span>. Please use a physical device with a standard GPU driver.</p>
+            <p class="text-slate-700 mt-4"><span class="font-semibold">Entry not allowed</span>. Please use Your Main OS.</p>
             <button id="vm-close-btn" class="mt-6 w-full bg-red-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-red-700 transition-all duration-300">Close</button>
         </div>
     </div>
@@ -239,7 +239,7 @@
             }
 
             function showVmBlocked(vendor, renderer, source) {
-                const detail = `Detected GPU Vendor/Renderer: \nVendor: ${vendor || 'Unknown'}\nRenderer: ${renderer || 'Unknown'}\n(Source: ${source})`;
+                const detail = `We can See, you are using Virtual Machine for Cheating`;
                 vmDetail.textContent = detail;
                 vmWarningModal.classList.remove('hidden');
                 vmBanner.classList.remove('hidden');
