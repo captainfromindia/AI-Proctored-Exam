@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proctored Online Exam</title>
+    <title>AI Proctored Online Exam</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
@@ -13,34 +13,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
     <!-- Custom Styles -->
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light blue-gray background */
+        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
+        .font-fira-code { font-family: 'Fira Code', monospace; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e0e7ff; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4338ca; }
+        .warning-popup { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity:0; transform: scale(0.9);} to {opacity:1; transform: scale(1);} }
+        /* Disable text selection */
+        body, textarea, input { 
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
         }
-        .font-fira-code {
-            font-family: 'Fira Code', monospace;
-        }
-        /* Custom scrollbar for better aesthetics */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #e0e7ff;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4f46e5;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4338ca;
-        }
-        /* Style for the warning popup */
-        .warning-popup {
-            animation: fadeIn 0.3s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+        /* Allow selection only in code editor area */
+        #code-answer { 
+            -webkit-user-select: text; 
+            -moz-user-select: text; 
+            -ms-user-select: text; 
+            user-select: text; 
         }
     </style>
 </head>
@@ -54,15 +47,26 @@
             <svg class="mx-auto h-16 w-16 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mt-4">Online Proctored Exam</h1>
-            <p class="text-slate-600 mt-4 text-base md:text-lg">
-                Please read the following instructions carefully before you begin.
-            </p>
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mt-4">AI-Powered Proctored Exam</h1>
+            <div class="text-left bg-indigo-50 border border-indigo-200 rounded-lg p-2 mt-2">
+                <p class="text-slate-600 mt-2 text-base md:text-lg">Advanced proctoring system similar to HackerRank, HackerEarth, and HirePro that monitors your exam environment in real-time.</p>
+            </div>
+            <p class="text-slate-600 mt-4 text-base md:text-lg">Please read the following instructions before you begin.</p>
+
+            <div id="vm-banner" class="hidden mt-4 p-3 rounded-lg border bg-red-50 border-red-200 text-red-800 text-left">
+              <div class="flex items-start">
+                <svg class="w-5 h-5 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                <div>
+                  <p class="font-semibold">Virtual Machine detected.</p>
+                  <p class="text-sm">Testing on VMs/remote desktops is not allowed. Please use a physical device.</p>
+                </div>
+              </div>
+            </div>
+
             <div class="text-left bg-slate-50 border border-slate-200 rounded-lg p-6 mt-6 space-y-3">
                 <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">1.</span> The exam must be taken in fullscreen mode.</p>
-                <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">2.</span> Do not exit fullscreen or switch tabs during the exam.</p>
-                <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">3.</span> Any such activity will be logged and may lead to disqualification.</p>
-                <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">4.</span> Ensure you have a stable internet connection.</p>
+                <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">2.</span> Do not exit fullscreen, switch tabs, or minimize the browser.</p>
+                <p class="flex items-start"><span class="text-indigo-500 font-bold mr-3">4.</span> All suspicious activities will be logged.</p>
             </div>
             <button id="start-exam-btn" class="mt-8 w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-300 transform hover:scale-105">
                 Start Exam & Enter Fullscreen
@@ -77,15 +81,11 @@
                     <!-- Header -->
                     <div class="flex justify-between items-center border-b pb-4">
                         <h1 class="text-2xl font-bold text-slate-900">Programming & Concepts Test</h1>
-                        <div id="timer" class="text-lg font-semibold bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg">
-                            Time Left: 10:00
-                        </div>
+                        <div id="timer" class="text-lg font-semibold bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg">Time Left: 10:00</div>
                     </div>
                     <!-- Question Area -->
-                    <div id="question-container" class="mt-8">
-                        <!-- Questions will be injected here by JavaScript -->
-                    </div>
-                     <!-- Navigation Buttons -->
+                    <div id="question-container" class="mt-8"></div>
+                    <!-- Navigation Buttons -->
                     <div class="mt-8 pt-6 border-t flex justify-between items-center">
                         <button id="prev-btn" class="bg-slate-300 text-slate-800 font-bold py-2 px-6 rounded-lg hover:bg-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300">Previous</button>
                         <span id="question-counter" class="text-slate-600 font-medium"></span>
@@ -99,10 +99,10 @@
                     <h2 class="text-xl font-bold text-slate-800 border-b pb-3 mb-4">Activity Log</h2>
                     <div id="activity-log-container" class="flex-1 overflow-y-auto space-y-3">
                         <p class="text-sm text-green-600 p-3 bg-green-50 rounded-lg">Exam started successfully.</p>
-                        <!-- Log entries will be added here -->
                     </div>
                     <div class="mt-auto text-center text-xs text-slate-500 pt-4">
-                        Made With 💖 by <a href="https://mrsagarbiswas.github.io/portfolio/" target="_blank" rel="noopener noreferrer" class="font-semibold text-indigo-600 hover:underline">MrSagarBiswas</a>
+                        AI Proctored Exam Environment <br>
+                        (Used by HackerRank, HackerEarth, HirePro, etc.)
                     </div>
                 </aside>
             </div>
@@ -110,32 +110,37 @@
 
         <!-- Submission Screen -->
         <div id="submission-screen" class="hidden text-center bg-white p-12 rounded-2xl shadow-2xl max-w-2xl mx-auto">
-             <svg class="mx-auto h-16 w-16 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <svg class="mx-auto h-16 w-16 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <h1 class="text-4xl font-bold text-slate-900 mt-4">Exam Submitted!</h1>
-            <p class="text-slate-600 mt-4 text-lg">
-                Thank you for completing the exam. Your responses have been recorded.
-            </p>
-            <div class="mt-6 text-slate-600">
-                You can now safely close this window.
-            </div>
+            <p class="text-slate-600 mt-4 text-lg">Thank you for completing the exam. Your responses have been recorded.</p>
+            <div class="mt-6 text-slate-600">You can now safely close this window.</div>
         </div>
     </div>
 
-    <!-- Modal for Fullscreen Warning -->
+    <!-- Modal: Fullscreen Warning -->
     <div id="fullscreen-warning-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl p-8 shadow-2xl text-center max-w-md mx-auto">
             <svg class="mx-auto h-16 w-16 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
             </svg>
             <h2 class="text-2xl font-bold text-slate-900 mt-4">Warning: Fullscreen Required</h2>
-            <p class="text-slate-600 mt-4">
-                You have exited fullscreen mode. This action has been logged. Please return to fullscreen to continue the exam.
-            </p>
-            <button id="return-fullscreen-btn" class="mt-6 w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300">
-                Return to Fullscreen
-            </button>
+            <p class="text-slate-600 mt-4">You have exited fullscreen mode. This action has been logged. Please return to fullscreen to continue the exam.</p>
+            <button id="return-fullscreen-btn" class="mt-6 w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300">Return to Fullscreen</button>
+        </div>
+    </div>
+
+    <!-- Modal: VM Detected (blocks exam start) -->
+    <div id="vm-warning-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 shadow-2xl text-center max-w-md mx-auto">
+            <svg class="mx-auto h-16 w-16 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            <h2 class="text-2xl font-bold text-slate-900 mt-4">Virtual Machine Detected</h2>
+            <p id="vm-detail" class="text-slate-600 mt-3 text-sm"></p>
+            <p class="text-slate-700 mt-4">Testing from a VM, remote desktop, or software renderer is <span class="font-semibold">not allowed</span>. Please use a physical device with a standard GPU driver.</p>
+            <button id="vm-close-btn" class="mt-6 w-full bg-red-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-red-700 transition-all duration-300">Close</button>
         </div>
     </div>
 
@@ -156,6 +161,10 @@
             const nextBtn = document.getElementById('next-btn');
             const submitBtn = document.getElementById('submit-btn');
             const questionCounterEl = document.getElementById('question-counter');
+            const vmWarningModal = document.getElementById('vm-warning-modal');
+            const vmCloseBtn = document.getElementById('vm-close-btn');
+            const vmBanner = document.getElementById('vm-banner');
+            const vmDetail = document.getElementById('vm-detail');
 
             // --- EXAM DATA & STATE ---
             let activityLog = [];
@@ -193,66 +202,105 @@
                 }
             ];
 
-            // --- FUNCTIONS ---
+            // --- VM DETECTION CONFIG ---
+            const VM_GPU_KEYWORDS = [
+              'VirtualBox','VBOX','VBoxSVGA','Oracle',
+              'VMware','VMW','SVGA',
+              'Parallels','QEMU','QXL','virtio','VirGL','virglrenderer',
+              'KVM','Hyper-V','HyperV','Microsoft Basic Render Driver','Basic Render Driver',
+              'Xen','Citrix','xenvideo','xenfb','XenGT',
+              'Bochs','Cirrus Logic','Standard VGA','Virtual VGA',
+              'Apple Virtual GPU','AppleSoftwareRenderer','AGXMetalG13P','MetalRenderer',
+              'WSL','GDI Generic','RDP','RDPUDD','RemoteFX','Teradici','PCoIP',
+              'SwiftShader','Google SwiftShader','llvmpipe','LLVMpipe','softpipe',
+              'Mesa','Mesa/X.org','Gallium llvmpipe',
+              'Microsoft Corporation','Direct3D Rasterizer',
+              'Chromium','Software Renderer',
+              'NVIDIA GRID','Remote Desktop','Virtual GPU','Headless'
+            ];
 
-            // Function to add a log entry
+            function getWebGLStrings() {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                    if (!gl) return { vendor: '', renderer: '', source: 'nogl' };
+                    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+                    const vendor = dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
+                    const renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+                    return { vendor: String(vendor || ''), renderer: String(renderer || ''), source: dbg ? 'unmasked' : 'masked' };
+                } catch (e) {
+                    return { vendor: '', renderer: '', source: 'error' };
+                }
+            }
+
+            function looksLikeVM(vendor, renderer) {
+                const hay = (vendor + ' ' + renderer).toLowerCase();
+                return VM_GPU_KEYWORDS.some(k => hay.includes(k.toLowerCase()));
+            }
+
+            function showVmBlocked(vendor, renderer, source) {
+                const detail = `Detected GPU Vendor/Renderer: \nVendor: ${vendor || 'Unknown'}\nRenderer: ${renderer || 'Unknown'}\n(Source: ${source})`;
+                vmDetail.textContent = detail;
+                vmWarningModal.classList.remove('hidden');
+                vmBanner.classList.remove('hidden');
+                // Disable start button to hard-block
+                startExamBtn.disabled = true;
+                startExamBtn.classList.add('opacity-60','cursor-not-allowed');
+                startExamBtn.classList.remove('hover:bg-indigo-700','hover:scale-105');
+            }
+
+            async function checkVMEnvironment() {
+                // Primary: WebGL strings
+                const { vendor, renderer, source } = getWebGLStrings();
+                if (looksLikeVM(vendor, renderer)) {
+                    return { detected: true, vendor, renderer, source };
+                }
+                // Secondary heuristic: userAgent hints (very weak, last resort)
+                const ua = (navigator.userAgent || '').toLowerCase();
+                const weakHints = ['virtualbox','vmware','qemu','xen','hyper-v','hyperv','parallels','wsl'];
+                if (weakHints.some(h => ua.includes(h))) {
+                    return { detected: true, vendor: vendor || 'Unknown', renderer: renderer || 'Unknown', source: 'userAgent+gl' };
+                }
+                return { detected: false, vendor, renderer, source };
+            }
+
+            // --- LOGGING ---
             const addLog = (message, type = 'warning') => {
                 const timestamp = new Date().toLocaleTimeString();
                 const logEntry = document.createElement('div');
-                
                 let bgColor, textColor, icon;
-                if (type === 'warning') {
-                    bgColor = 'bg-red-100';
-                    textColor = 'text-red-800';
-                    icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.21 3.03-1.742 3.03H4.42c-1.532 0-2.492-1.696-1.742-3.03l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`;
-                } else if (type === 'success') {
-                    bgColor = 'bg-green-100';
-                    textColor = 'text-green-800';
-                    icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`;
-                } else { // 'info' type
-                    bgColor = 'bg-blue-100';
-                    textColor = 'text-blue-800';
-                    icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
-                }
-
+                if (type === 'warning') { bgColor = 'bg-red-100'; textColor = 'text-red-800'; icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.21 3.03-1.742 3.03H4.42c-1.532 0-2.492-1.696-1.742-3.03l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`; }
+                else if (type === 'success') { bgColor = 'bg-green-100'; textColor = 'text-green-800'; icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`; }
+                else { bgColor = 'bg-blue-100'; textColor = 'text-blue-800'; icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`; }
                 logEntry.className = `flex items-start p-3 rounded-lg text-sm ${bgColor} ${textColor}`;
-                logEntry.innerHTML = `
-                    ${icon}
-                    <div>
-                        <p class="font-semibold">${message}</p>
-                        <p class="text-xs mt-1">${timestamp}</p>
-                    </div>
-                `;
+                logEntry.innerHTML = `${icon}<div><p class="font-semibold">${message}</p><p class="text-xs mt-1">${timestamp}</p></div>`;
                 activityLogContainer.appendChild(logEntry);
-                activityLogContainer.scrollTop = activityLogContainer.scrollHeight; // Auto-scroll
+                activityLogContainer.scrollTop = activityLogContainer.scrollHeight;
                 activityLog.push({ timestamp, message, type });
             };
 
-            // Function to start the exam
+            // --- EXAM CORE ---
             const startExam = () => {
                 welcomeScreen.classList.add('hidden');
                 examView.classList.remove('hidden');
-                isExamActive = true; // Set flag before requesting fullscreen to prevent race condition
+                isExamActive = true;
                 document.documentElement.requestFullscreen().catch(err => {
                     alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                    isExamActive = false; // Exam failed to start correctly
+                    isExamActive = false;
                 });
-                startTimer(600); // 10 minutes timer
+                startTimer(600);
                 renderQuestion();
             };
-            
-            // Function to render the current question
+
             const renderQuestion = () => {
                 const question = examQuestions[currentQuestionIndex];
                 let questionBodyHtml = '';
-
                 if (question.type === 'code') {
                     questionBodyHtml = `
                         <div class="bg-slate-800 text-slate-200 p-4 rounded-lg font-fira-code">
                            <p class="mb-4 text-slate-400">// Provide your solution in the text area below.</p>
                            <textarea id="code-answer" class="w-full h-64 p-4 border-slate-600 bg-slate-900 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-shadow duration-200 text-slate-200 font-fira-code resize-none" placeholder="Your code here..."></textarea>
-                        </div>
-                    `;
+                        </div>`;
                 } else {
                     questionBodyHtml = `
                         <div class="space-y-4">
@@ -262,19 +310,15 @@
                                     <span class="ml-4 text-slate-700">${option}</span>
                                 </label>
                             `).join('')}
-                        </div>
-                    `;
+                        </div>`;
                 }
-
                 questionContainer.innerHTML = `
                     <h2 class="text-xl md:text-2xl font-semibold text-slate-800 mb-2">Question ${currentQuestionIndex + 1} of ${examQuestions.length}</h2>
                     <p class="text-slate-700 text-lg mb-6 leading-relaxed">${question.question}</p>
-                    ${questionBodyHtml}
-                `;
+                    ${questionBodyHtml}`;
                 updateNavigation();
             };
 
-            // Function to update navigation buttons
             const updateNavigation = () => {
                 prevBtn.disabled = currentQuestionIndex === 0;
                 if (currentQuestionIndex === examQuestions.length - 1) {
@@ -287,139 +331,192 @@
                 questionCounterEl.textContent = `Question ${currentQuestionIndex + 1} / ${examQuestions.length}`;
             };
 
-            // Function to handle exam submission
             const submitExam = () => {
                 clearInterval(timerInterval);
                 isExamActive = false;
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                }
+                if (document.fullscreenElement) { document.exitFullscreen(); }
                 examView.classList.add('hidden');
                 submissionScreen.classList.remove('hidden');
             }
 
-            // Function to start the timer
             const startTimer = (duration) => {
                 let timeLeft = duration;
                 timerInterval = setInterval(() => {
                     const minutes = Math.floor(timeLeft / 60);
-                    let seconds = timeLeft % 60;
-                    seconds = seconds < 10 ? '0' + seconds : seconds;
+                    let seconds = timeLeft % 60; seconds = seconds < 10 ? '0' + seconds : seconds;
                     timerEl.textContent = `Time Left: ${minutes}:${seconds}`;
                     timeLeft--;
-                    if (timeLeft < 0) {
-                        clearInterval(timerInterval);
-                        addLog("Time's up! Exam submitted automatically.", 'info');
-                        submitExam();
-                    }
+                    if (timeLeft < 0) { clearInterval(timerInterval); addLog("Time's up! Exam submitted automatically.", 'info'); submitExam(); }
                 }, 1000);
             };
 
-
             // --- EVENT LISTENERS ---
+            async function onStartClick() {
+                // First, check VM
+                const vmCheck = await checkVMEnvironment();
+                if (vmCheck.detected) {
+                    // Block the exam and show details
+                    showVmBlocked(vmCheck.vendor, vmCheck.renderer, vmCheck.source);
+                    return;
+                }
+                // Proceed to start
+                startExam();
+            }
 
-            startExamBtn.addEventListener('click', startExam);
+            startExamBtn.addEventListener('click', onStartClick);
+            vmCloseBtn.addEventListener('click', () => { vmWarningModal.classList.add('hidden'); });
 
             returnFullscreenBtn.addEventListener('click', () => {
                 document.documentElement.requestFullscreen().catch(err => {
                     alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
                 });
             });
-            
-            // Navigation listeners
-            nextBtn.addEventListener('click', () => {
-                if (currentQuestionIndex < examQuestions.length - 1) {
-                    currentQuestionIndex++;
-                    renderQuestion();
-                }
-            });
 
-            prevBtn.addEventListener('click', () => {
-                if (currentQuestionIndex > 0) {
-                    currentQuestionIndex--;
-                    renderQuestion();
-                }
-            });
+            nextBtn.addEventListener('click', () => { if (currentQuestionIndex < examQuestions.length - 1) { currentQuestionIndex++; renderQuestion(); } });
+            prevBtn.addEventListener('click', () => { if (currentQuestionIndex > 0) { currentQuestionIndex--; renderQuestion(); } });
+            submitBtn.addEventListener('click', () => { submitExam(); });
 
-            submitBtn.addEventListener('click', () => {
-                // You can add a confirmation modal here in a real application
-                submitExam();
-            });
-
-            // Listener for fullscreen changes
+            // Fullscreen changes
             document.addEventListener('fullscreenchange', () => {
                 if (isExamActive) {
                     if (document.fullscreenElement) {
-                        // User has entered or returned to fullscreen
-                        if (!hasEnteredFullscreenInitially) {
-                            addLog('Entered fullscreen mode successfully.', 'success');
-                            hasEnteredFullscreenInitially = true;
-                        } else {
-                            addLog('Returned to fullscreen mode.', 'success');
-                        }
+                        if (!hasEnteredFullscreenInitially) { addLog('Entered fullscreen mode successfully.', 'success'); hasEnteredFullscreenInitially = true; }
+                        else { addLog('Returned to fullscreen mode.', 'success'); }
                         fullscreenWarningModal.classList.add('hidden');
                     } else {
-                        // User has exited fullscreen
                         addLog('Exited fullscreen mode.', 'warning');
                         fullscreenWarningModal.classList.remove('hidden');
                     }
                 }
             });
 
-            // Enhanced listeners for detecting cheating
+            // Copy/Cut detection
+            document.addEventListener('copy', (e) => { 
+                if (!isExamActive) return; 
+                const selectedText = window.getSelection().toString();
+                if (selectedText.length > 0) {
+                    addLog(`Copied text: "${selectedText.substring(0, 50)}${selectedText.length > 50 ? '...' : ''}"`, 'warning');
+                }
+            });
             
-            // 1. Detect leaving the tab/window
+            document.addEventListener('cut', (e) => { 
+                if (!isExamActive) return; 
+                const selectedText = window.getSelection().toString();
+                if (selectedText.length > 0) {
+                    addLog(`Cut text: "${selectedText.substring(0, 50)}${selectedText.length > 50 ? '...' : ''}"`, 'warning');
+                }
+            });
+
+            // Cheating / focus detection
             document.addEventListener('visibilitychange', () => {
                 if (!isExamActive) return;
-                
                 if (document.hidden) {
-                    if (!awayStartTime) { // Prevent double logging from blur
-                        awayStartTime = new Date();
-                        addLog('Switched to another tab or window.', 'warning');
+                    if (!awayStartTime) { awayStartTime = new Date(); addLog('Switched to another tab or window.', 'warning'); }
+                } else {
+                    if (awayStartTime) { const timeAway = Math.round((new Date() - awayStartTime) / 1000); addLog(`Returned to exam tab after ${timeAway} second(s).`, 'info'); awayStartTime = null; }
+                }
+            });
+            window.addEventListener('blur', () => {
+                if (isExamActive && document.fullscreenElement && !document.hidden && !awayStartTime) { awayStartTime = new Date(); addLog('Left the exam browser window.', 'warning'); }
+            });
+            window.addEventListener('focus', () => {
+                if (isExamActive && awayStartTime) { const timeAway = Math.round((new Date() - awayStartTime) / 1000); addLog(`Returned to exam window after ${timeAway} second(s).`, 'info'); awayStartTime = null; }
+            });
+            document.addEventListener('paste', (e) => { if (!isExamActive) return; addLog('Pasted content from clipboard.', 'warning'); });
+            document.addEventListener('keyup', (e) => { if (e.key === 'PrintScreen' && isExamActive) { addLog('Attempted to take a screenshot (PrintScreen key pressed).', 'warning'); } });
+
+            // Screen capture detection (getDisplayMedia API)
+            if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+                const originalGetDisplayMedia = navigator.mediaDevices.getDisplayMedia.bind(navigator.mediaDevices);
+                navigator.mediaDevices.getDisplayMedia = async function(...args) {
+                    if (isExamActive) {
+                        addLog('Screen sharing/recording detected! (getDisplayMedia called)', 'warning');
+                    }
+                    return originalGetDisplayMedia(...args);
+                };
+            }
+
+            // Detect keyboard shortcuts for screenshots
+            document.addEventListener('keydown', (e) => {
+                if (!isExamActive) return;
+                
+                // Windows: Win + Shift + S (Snipping Tool), Win + PrtScn
+                // Mac: Cmd + Shift + 3/4/5
+                // Linux: PrtScn, Shift + PrtScn
+                
+                if (e.key === 'PrintScreen') {
+                    addLog('Screenshot attempt detected (PrintScreen key).', 'warning');
+                }
+                
+                if ((e.metaKey || e.key === 'Meta') && e.shiftKey && (e.key === 's' || e.key === 'S')) {
+                    addLog('Screenshot attempt detected (Windows Snipping Tool shortcut).', 'warning');
+                }
+                
+                if (e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key)) {
+                    addLog('Screenshot attempt detected (macOS screenshot shortcut).', 'warning');
+                }
+            });
+
+            // Monitor for screen recording software (check for specific window titles or processes - limited in browser)
+            // We can detect if the user switches to another window which might be recording software
+            let recordingCheckInterval;
+            
+            function startRecordingDetection() {
+                // Monitor screen orientation changes that might indicate recording
+                if (screen.orientation) {
+                    screen.orientation.addEventListener('change', () => {
+                        if (isExamActive) {
+                            addLog('Screen orientation changed during exam.', 'info');
+                        }
+                    });
+                }
+                
+                // Monitor for resolution changes that might indicate recording setup
+                let lastWidth = screen.width;
+                let lastHeight = screen.height;
+                recordingCheckInterval = setInterval(() => {
+                    if (isExamActive && (screen.width !== lastWidth || screen.height !== lastHeight)) {
+                        addLog('Screen resolution changed during exam.', 'warning');
+                        lastWidth = screen.width;
+                        lastHeight = screen.height;
+                    }
+                }, 2000);
+            }
+
+            // Context menu (right-click) blocking to prevent screenshot extensions
+            document.addEventListener('contextmenu', (e) => {
+                if (isExamActive) {
+                    e.preventDefault();
+                    addLog('Right-click menu blocked during exam.', 'info');
+                }
+            });
+
+            // Detect if DevTools is opened (can be used for screenshots)
+            let devtoolsOpen = false;
+            const detectDevTools = () => {
+                const threshold = 160;
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                
+                if (isExamActive && (widthThreshold || heightThreshold)) {
+                    if (!devtoolsOpen) {
+                        devtoolsOpen = true;
+                        addLog('Developer Tools opened (potential screenshot risk).', 'warning');
                     }
                 } else {
-                    if (awayStartTime) {
-                        const timeAway = Math.round((new Date() - awayStartTime) / 1000);
-                        addLog(`Returned to exam tab after ${timeAway} second(s).`, 'info');
-                        awayStartTime = null;
+                    if (devtoolsOpen) {
+                        devtoolsOpen = false;
+                        addLog('Developer Tools closed.', 'info');
                     }
                 }
-            });
+            };
+
+            // Start detection when exam starts
+            setInterval(detectDevTools, 1000);
             
-            // 2. Detect leaving the browser window (blur)
-            window.addEventListener('blur', () => {
-                if (isExamActive && document.fullscreenElement && !document.hidden && !awayStartTime) {
-                    awayStartTime = new Date();
-                    addLog('Left the exam browser window.', 'warning');
-                }
-            });
-
-            window.addEventListener('focus', () => {
-                if (isExamActive && awayStartTime) {
-                    const timeAway = Math.round((new Date() - awayStartTime) / 1000);
-                    addLog(`Returned to exam window after ${timeAway} second(s).`, 'info');
-                    awayStartTime = null;
-                }
-            });
-            
-            // 3. Detect Paste
-            document.addEventListener('paste', (e) => {
-                if (!isExamActive) return;
-                addLog('Pasted content from clipboard.', 'warning');
-                // Optionally, you can prevent the paste action
-                // e.preventDefault();
-            });
-
-            // 4. Detect Screenshot attempt (Note: Not foolproof)
-            document.addEventListener('keyup', (e) => {
-                if (e.key === 'PrintScreen' && isExamActive) {
-                    addLog('Attempted to take a screenshot (PrintScreen key pressed).', 'warning');
-                }
-            });
-
+            // Initialize recording detection
+            startRecordingDetection();
         });
     </script>
 </body>
 </html>
-
-
